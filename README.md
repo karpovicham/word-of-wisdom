@@ -15,8 +15,8 @@ The POW interface is designed here to use the challenge–response protocol with
 The application uses the [Hashcash](https://en.wikipedia.org/wiki/Hashcash) POW algorithm. The Hashcash is known as standard implementation of POW system, it's clear and good enough to simply show the concept of POW approach.
 This algorithm is used in the applications like - Bitcoin mining, Spam filters email client, etc.
 
-The idea is that the Client should Do Work to solve the challenge by hashing serialized string (Header) of Hashcash data (generated on the server side) and matching it to require leading zero bits, each try increments the Counter of the data itself.
-Ones the Work is succeeded the client should send the result data back to the server for the validation. If server POW system proves the Work done, the client could access resources.
+The idea is that Client must Do some Work to solve the Challenge by hashing serialized string (Header) of Hashcash data (generated on Server side) and checking if it meets leading zero bits requirement, if not increment the Counter of the data itself and try again in a loop.
+Ones the Work is succeeded Client should send the result data back to Server for the validation. If server POW system proves the Work done, Client could access resources.
 
 The standard Header formant is `version:bits:date:source::random:counter` for the Data object with fields:
 - *version*: Hashcash format version, should be `1`
