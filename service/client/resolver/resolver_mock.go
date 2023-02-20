@@ -6,10 +6,10 @@ import (
 	"sync"
 	mm_atomic "sync/atomic"
 	mm_time "time"
-	"wow/pkg/pow"
-	"wow/service/quotes_book"
 
 	"github.com/gojuno/minimock/v3"
+	"github.com/karpovicham/word-of-wisdom/pkg/pow"
+	"github.com/karpovicham/word-of-wisdom/service/quotes_book"
 )
 
 // ResolverMock implements Resolver

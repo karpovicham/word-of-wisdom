@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      dockerfile: docker.server.Dockerfile
+      context: .
+    ports:
+      - '9992:9992'
+    restart: 'no'
+
+  client:
+    build:
+      context: .
+      dockerfile: docker.client.Dockerfile
+    restart: 'no'
+    depends_on:
+      - server
+    deploy:
+      mode: replicated
+      replicas: 2
