@@ -128,10 +128,10 @@ var _ = Describe("server tests", func() {
 				server.handleConnection(ctx, clientConnMock)
 			})
 
-			When("msgr.Receive return Challenge message", func() {
+			When("msgr.Receive return TypeChallenge message", func() {
 				BeforeEach(func() {
 					receiveProtoMsg = &proto.Message{
-						Type: proto.Challenge,
+						Type: proto.TypeChallenge,
 						Data: nil,
 					}
 
@@ -155,7 +155,7 @@ var _ = Describe("server tests", func() {
 							Return(powData, nil)
 
 						respProtoMsg = &proto.Message{
-							Type: proto.Challenge,
+							Type: proto.TypeChallenge,
 							Data: powData,
 						}
 					})
@@ -170,12 +170,12 @@ var _ = Describe("server tests", func() {
 				})
 			})
 
-			When("msgr.Receive return Quote message", func() {
+			When("msgr.Receive return TypeQuote message", func() {
 				BeforeEach(func() {
 					fuzzer.NumElements(2, 4).Fuzz(&powData)
 
 					receiveProtoMsg = &proto.Message{
-						Type: proto.Quote,
+						Type: proto.TypeQuote,
 						Data: powData,
 					}
 
@@ -216,7 +216,7 @@ var _ = Describe("server tests", func() {
 								Return(quote, nil)
 
 							respProtoMsg = &proto.Message{
-								Type: proto.Quote,
+								Type: proto.TypeQuote,
 								Data: quote.ToJson(),
 							}
 						})
@@ -232,10 +232,10 @@ var _ = Describe("server tests", func() {
 				})
 			})
 
-			When("msgr.Receive return Stop message", func() {
+			When("msgr.Receive return TypeStop message", func() {
 				BeforeEach(func() {
 					receiveProtoMsg = &proto.Message{
-						Type: proto.Stop,
+						Type: proto.TypeStop,
 						Data: nil,
 					}
 

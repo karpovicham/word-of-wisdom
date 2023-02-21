@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/karpovicham/word-of-wisdom/pkg/hashcash"
 	"net"
 
 	"github.com/karpovicham/word-of-wisdom/internal/messenger"
@@ -30,7 +32,7 @@ func (h *RequestHandler) HandleChallengeRequest(ctx context.Context) error {
 	}
 
 	if err := h.Msgr.Send(&proto.Message{
-		Type: proto.Challenge,
+		Type: proto.TypeChallenge,
 		Data: data,
 	}); err != nil {
 		return fmt.Errorf("send: %w", err)
@@ -41,6 +43,15 @@ func (h *RequestHandler) HandleChallengeRequest(ctx context.Context) error {
 
 func (h *RequestHandler) HandleQuoteRequest(ctx context.Context, msg *proto.Message) error {
 	if err := h.POWWorker.ValidateWorkDone(ctx, h.ClientName, msg.Data); err != nil {
+		if errors.Is(err, hashcash.ErrInvalidWorkDone) {
+			if err = h.Msgr.Send(&proto.Message{
+				Type:  proto.TypeQuote,
+				Error: &proto.ErrorNotVerified,
+			}); err != nil {
+				return fmt.Errorf("send: %w", err)
+			}
+			return nil
+		}
 		return fmt.Errorf("generateNew: %w", err)
 	}
 
@@ -50,7 +61,7 @@ func (h *RequestHandler) HandleQuoteRequest(ctx context.Context, msg *proto.Mess
 	}
 
 	if err = h.Msgr.Send(&proto.Message{
-		Type: proto.Quote,
+		Type: proto.TypeQuote,
 		Data: quote.ToJson(),
 	}); err != nil {
 		return fmt.Errorf("send: %w", err)

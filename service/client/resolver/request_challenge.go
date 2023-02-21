@@ -7,9 +7,9 @@ import (
 	"github.com/karpovicham/word-of-wisdom/pkg/pow"
 )
 
-func (r *apiResolver) RequestChallenge() (pow.Data, error) {
+func (r *resolver) RequestChallenge() (pow.Data, error) {
 	if err := r.Msgr.Send(&proto.Message{
-		Type: proto.Challenge,
+		Type: proto.TypeChallenge,
 		Data: nil,
 	}); err != nil {
 		return nil, fmt.Errorf("send: %w", err)
@@ -20,8 +20,12 @@ func (r *apiResolver) RequestChallenge() (pow.Data, error) {
 		return nil, fmt.Errorf("receive: %w", err)
 	}
 
-	if resp.Type != proto.Challenge {
+	if resp.Type != proto.TypeChallenge {
 		return nil, ErrInvalidRespType
+	}
+
+	if err := checkRespMsgError(resp.Error); err != nil {
+		return nil, err
 	}
 
 	return resp.Data, nil

@@ -11,13 +11,16 @@ import (
 )
 
 var (
-	ErrInvalidRespData = errors.New("invalid response data")
-	ErrInvalidRespType = errors.New("invalid response type")
+	ErrInvalidRespData  = errors.New("invalid response data")
+	ErrInvalidRespType  = errors.New("invalid response type")
+	ErrUnknownRespError = errors.New("invalid response error")
+	ErrInvalidReqData   = errors.New("invalid request data")
+	ErrNotVerified      = errors.New("not verified")
 )
 
-func (r *apiResolver) RequestQuote(powData pow.Data) (*quotes_book.Quote, error) {
+func (r *resolver) RequestQuote(powData pow.Data) (*quotes_book.Quote, error) {
 	if err := r.Msgr.Send(&proto.Message{
-		Type: proto.Quote,
+		Type: proto.TypeQuote,
 		Data: powData,
 	}); err != nil {
 		return nil, fmt.Errorf("send: %w", err)
@@ -28,8 +31,12 @@ func (r *apiResolver) RequestQuote(powData pow.Data) (*quotes_book.Quote, error)
 		return nil, fmt.Errorf("receive: %w", err)
 	}
 
-	if resp.Type != proto.Quote {
+	if resp.Type != proto.TypeQuote {
 		return nil, ErrInvalidRespType
+	}
+
+	if err := checkRespMsgError(resp.Error); err != nil {
+		return nil, err
 	}
 
 	var quote quotes_book.Quote

@@ -112,17 +112,17 @@ func (s *Server) handleConnection(ctx context.Context, conn net.Conn) {
 		}
 
 		switch receivedMsg.Type {
-		case proto.Challenge:
+		case proto.TypeChallenge:
 			if err = handler.HandleChallengeRequest(ctx); err != nil {
 				s.Log.Error("HandleChallengeRequest:", err)
 				return
 			}
-		case proto.Quote:
+		case proto.TypeQuote:
 			if err = handler.HandleQuoteRequest(ctx, receivedMsg); err != nil {
 				s.Log.Error("HandleQuoteRequest:", err)
 				return
 			}
-		case proto.Stop:
+		case proto.TypeStop:
 			return
 		default:
 			s.Log.Error("Unsupported protocols:", receivedMsg.Type, err)

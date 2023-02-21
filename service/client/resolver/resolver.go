@@ -2,6 +2,7 @@ package resolver
 
 import (
 	"github.com/karpovicham/word-of-wisdom/internal/messenger"
+	"github.com/karpovicham/word-of-wisdom/internal/proto"
 	"github.com/karpovicham/word-of-wisdom/pkg/pow"
 	"github.com/karpovicham/word-of-wisdom/service/quotes_book"
 )
@@ -16,12 +17,29 @@ type Resolver interface {
 	Stop() error
 }
 
-type apiResolver struct {
+type resolver struct {
 	Msgr messenger.Messenger
 }
 
+// NewClientAPIResolver returns implementer Resolver
 func NewClientAPIResolver(msgr messenger.Messenger) Resolver {
-	return &apiResolver{
+	return &resolver{
 		Msgr: msgr,
+	}
+}
+
+// checkRespMsgError return domain like error message proto contains one
+func checkRespMsgError(err *proto.Error) error {
+	if err == nil {
+		return nil
+	}
+
+	switch *err {
+	case proto.ErrorInvalidData:
+		return ErrInvalidReqData
+	case proto.ErrorNotVerified:
+		return ErrNotVerified
+	default:
+		return ErrUnknownRespError
 	}
 }
