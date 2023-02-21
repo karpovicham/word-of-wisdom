@@ -46,7 +46,7 @@ func (h *RequestHandler) HandleQuoteRequest(ctx context.Context, msg *proto.Mess
 		if errors.Is(err, hashcash.ErrInvalidWorkDone) {
 			if err = h.Msgr.Send(&proto.Message{
 				Type:  proto.TypeQuote,
-				Error: &proto.ErrorNotVerified,
+				Error: proto.ErrorPtr(proto.ErrorNotVerified),
 			}); err != nil {
 				return fmt.Errorf("send: %w", err)
 			}

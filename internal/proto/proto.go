@@ -3,7 +3,6 @@ package proto
 
 import (
 	"encoding/json"
-	"errors"
 )
 
 // Type represents request/response type
@@ -19,13 +18,13 @@ const (
 	TypeStop
 )
 
-type Error error
+type Error int
 
-var (
+const (
 	// ErrorInvalidData - Request data is not valid (ie not correct data format for the Type)
-	ErrorInvalidData = Error(errors.New("invalid data"))
+	ErrorInvalidData Error = iota
 	// ErrorNotVerified - Verification failed or Verification required to access the resource
-	ErrorNotVerified = Error(errors.New("not verified"))
+	ErrorNotVerified
 )
 
 // Message - Transferred data structure
@@ -45,14 +44,13 @@ func Parse(b []byte) (*Message, error) {
 	return &msg, nil
 }
 
-// ToString - encodes Message to JSON string
-func (m *Message) ToString() string {
-	msgBytes, _ := json.Marshal(m)
-	return string(msgBytes)
-}
-
 // ToJSON - encodes Message to JSON bytes
 func (m *Message) ToJSON() []byte {
 	msgBytes, _ := json.Marshal(m)
 	return msgBytes
+}
+
+// ErrorPtr helper func to return pointers for constants
+func ErrorPtr(err Error) *Error {
+	return &err
 }

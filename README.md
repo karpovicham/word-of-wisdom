@@ -64,4 +64,5 @@ The `minimock` tool must be installed for the mock code generation (see installa
 ## TODO
 - Implement workers pool for handling client connections on server side
 - The TTL config for the work to be done should be provided from server side as well
+- Handle proto errors properly
 - Complete tests for the rest of the packages

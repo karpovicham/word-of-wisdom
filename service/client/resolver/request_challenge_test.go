@@ -115,7 +115,7 @@ var _ = Describe("RequestChallenge tests", func() {
 
 					When("message returns valid data error", func() {
 						It("should return error", func() {
-							respMsg.Error = &proto.ErrorInvalidData
+							respMsg.Error = proto.ErrorPtr(proto.ErrorInvalidData)
 
 							_, err := r.RequestChallenge()
 							Ω(err).Should(MatchError(ErrInvalidReqData))
@@ -124,7 +124,7 @@ var _ = Describe("RequestChallenge tests", func() {
 
 					When("message returns not verified error", func() {
 						It("should return error", func() {
-							respMsg.Error = &proto.ErrorNotVerified
+							respMsg.Error = proto.ErrorPtr(proto.ErrorNotVerified)
 
 							_, err := r.RequestChallenge()
 							Ω(err).Should(MatchError(ErrNotVerified))
@@ -133,8 +133,7 @@ var _ = Describe("RequestChallenge tests", func() {
 
 					When("message returns unknown error", func() {
 						It("should return error", func() {
-							e := proto.Error(testErr)
-							respMsg.Error = &e
+							respMsg.Error = proto.ErrorPtr(proto.Error(100))
 
 							_, err := r.RequestChallenge()
 							Ω(err).Should(MatchError(ErrUnknownRespError))
