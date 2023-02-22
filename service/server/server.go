@@ -39,6 +39,7 @@ func NewTCPServer(cfg Config, logger logger.Logger, services Services,
 	}
 }
 
+// Run - start the server and serve new client connection in endless loop
 func (s *Server) Run(ctx context.Context) error {
 	// Init server listener
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%s", s.Cfg.Host, s.Cfg.Port))
@@ -131,7 +132,7 @@ func (s *Server) handleConnection(ctx context.Context, conn net.Conn) {
 	}
 }
 
-// Look up if the context is canceled or not
+// canceled returns true if the context is canceled
 func canceled(ctx context.Context) bool {
 	select {
 	case <-ctx.Done():

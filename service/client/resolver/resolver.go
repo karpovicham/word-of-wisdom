@@ -21,14 +21,14 @@ type resolver struct {
 	Msgr messenger.Messenger
 }
 
-// NewClientAPIResolver returns implementer Resolver
+// NewClientAPIResolver returns implemented Resolver
 func NewClientAPIResolver(msgr messenger.Messenger) Resolver {
 	return &resolver{
 		Msgr: msgr,
 	}
 }
 
-// checkRespMsgError return domain like error message proto contains one
+// checkRespMsgError returns domain like error message proto contains one
 func checkRespMsgError(err *proto.Error) error {
 	if err == nil {
 		return nil

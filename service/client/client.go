@@ -29,6 +29,8 @@ func NewClient(cfg Config, log logger.Logger, powWorker pow.ClientWorker) *Clien
 	}
 }
 
+// Run connects to the server
+// and start getting Quote every 3 seconds in endless loop
 func (c *Client) Run(ctx context.Context) error {
 	// Create a socket and start listening
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", c.Cfg.Host, c.Cfg.Port))
@@ -49,20 +51,19 @@ func (c *Client) Run(ctx context.Context) error {
 	go func() {
 		defer wg.Done()
 
+		// Endless loop to get a new Quote every 3 secs
 		for {
-			// Request challenge and get quote
 			if err = c.ProcessQuote(ctx, apiResolver); err != nil {
 				switch true {
 				case canceled(ctx):
 				case errors.Is(err, io.EOF):
 					c.Log.Error("Server closed connection")
 				default:
-					c.Log.Error("ProcessQuote: ", err)
+					c.Log.Error("Process quote: ", err)
 				}
 				return
 			}
 
-			// Request challenge and get quote
 			time.Sleep(3 * time.Second)
 		}
 	}()
@@ -78,6 +79,7 @@ func watchContext(ctx context.Context, conn net.Conn) {
 	conn.Close()
 }
 
+// canceled returns true if the context is canceled
 func canceled(ctx context.Context) bool {
 	select {
 	case <-ctx.Done():
